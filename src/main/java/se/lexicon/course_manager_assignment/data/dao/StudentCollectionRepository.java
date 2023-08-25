@@ -6,6 +6,9 @@ import se.lexicon.course_manager_assignment.model.Student;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 
 public class StudentCollectionRepository implements StudentDao {
@@ -18,32 +21,45 @@ public class StudentCollectionRepository implements StudentDao {
 
     @Override
     public Student createStudent(String name, String email, String address) {
-        return null;
+        Student student = new Student(name, email, address);
+        this.students.add(student);
+        return student;
     }
 
     @Override
     public Student findByEmailIgnoreCase(String email) {
-        return null;
+        return this.findAll()
+                .stream()
+                .filter(a -> a.getEmail().equalsIgnoreCase(email))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
     public Collection<Student> findByNameContains(String name) {
-        return null;
+        return this.findAll()
+                .stream()
+                .filter(a -> a.getName().contains(name))
+                .collect(Collectors.toList());
     }
 
     @Override
     public Student findById(int id) {
-        return null;
+        return this.findAll()
+                .stream()
+                .filter(a -> a.getId() == id)
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
     public Collection<Student> findAll() {
-        return null;
+        return this.students;
     }
 
     @Override
     public boolean removeStudent(Student student) {
-        return false;
+        return this.students.remove(student);
     }
 
     @Override

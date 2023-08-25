@@ -3,11 +3,13 @@ package se.lexicon.course_manager_assignment.dto.forms;
 
 
 import org.springframework.format.annotation.DateTimeFormat;
+import se.lexicon.course_manager_assignment.dto.views.CourseView;
 import se.lexicon.course_manager_assignment.messages.ValidationMessages;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class CreateCourseForm implements Serializable {
 
@@ -67,5 +69,10 @@ public class CreateCourseForm implements Serializable {
 
     public void setWeekDuration(Integer weekDuration) {
         this.weekDuration = weekDuration;
+    }
+
+    public CourseView intoView() {
+        // int id, String courseName, LocalDate startDate, int weekDuration, List<StudentView> students) {
+        return new CourseView(id, courseName, startDate, weekDuration, new ArrayList<>());
     }
 }
