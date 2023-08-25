@@ -33,10 +33,24 @@ public class Course implements Serializable {
     }
 
     public boolean enrollStudent(Student student) {
+        if (student == null) {
+            return false;
+        }
+        if (students.contains(student)) {
+            return false;
+        }
+
         return students.add(student);
     }
 
     public boolean unenrollStudent(Student student) {
+        if (student == null) {
+            return false;
+        }
+        if (!students.contains(student)) {
+            return false;
+        }
+
         return students.remove(student);
     }
 
