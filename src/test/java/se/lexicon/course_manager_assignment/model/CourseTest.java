@@ -1,10 +1,9 @@
 package se.lexicon.course_manager_assignment.model;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import se.lexicon.course_manager_assignment.data.sequencers.CourseSequencer;
 import se.lexicon.course_manager_assignment.data.service.converter.Converters;
 import se.lexicon.course_manager_assignment.data.service.converter.ModelToDto;
 import se.lexicon.course_manager_assignment.data.service.converter.ModelToDtoTest;
@@ -21,6 +20,8 @@ public class CourseTest {
     @Autowired
     private Converters converters;
 
+    private Course testObject;
+
     @Test
     @DisplayName("Test context")
     void testContext() {
@@ -31,12 +32,43 @@ public class CourseTest {
         return new Course(1, "Test Course", LocalDate.now(), 12, new ArrayList<>());
     }
 
+    Student getExampleStudent() {
+        return new Student(1, "Test Student", "email@example.org", "Somewhere Rd");
+    }
+
+    @BeforeEach
+    void setup() {
+        testObject = getExample();
+    }
+
     @Test
     void courseViewTest() {
         Course course = getExample();
         CourseView courseView = converters.courseToCourseView(course);
 
         ModelToDtoTest.isSame(course, courseView);
+    }
+
+    @Test
+    void enrollStudentTest() {
+        Student student = getExampleStudent();
+
+        assertTrue(testObject.enrollStudent(student));
+
+        assertFalse(testObject.enrollStudent(student));
+        assertFalse(testObject.enrollStudent(null));
+    }
+
+    @Test
+    void unenrollStudent() {
+        Student student = getExampleStudent();
+
+        assertTrue(testObject.enrollStudent(student));
+        assertTrue(testObject.unenrollStudent(student));
+
+        assertFalse(testObject.unenrollStudent(null));
+        assertFalse(testObject.unenrollStudent(new Student(2, "Other Student", "other.student@example.com", "Someplace St")));
+
     }
 
     @Test
@@ -49,5 +81,10 @@ public class CourseTest {
         assertNotEquals(courseOne, differentCourse);
         assertEquals(courseOne.hashCode(), sameCourse.hashCode());
         assertNotEquals(courseOne.hashCode(), differentCourse.hashCode());
+    }
+
+    @AfterEach
+    void tearDown() {
+        CourseSequencer.setCourseSequencer(0);
     }
 }
